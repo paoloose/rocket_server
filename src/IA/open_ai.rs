@@ -1,5 +1,5 @@
 
-pub mod chatAI {
+pub mod chat_ai {
     use openai_api_rs::v1::api::Client;
     use openai_api_rs::v1::chat_completion::{self, ChatCompletionRequest};
     use openai_api_rs::v1::common::GPT4;

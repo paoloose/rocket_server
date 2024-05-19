@@ -4,7 +4,7 @@ use rocket::response::Redirect;
 use rocket::serde::json::{json, Value};
 
 pub mod ia;
-use crate::ia::openAI::chatAI;
+use crate::ia::open_ai::chat_ai;
 
 #[macro_use] 
 extern crate rocket;
@@ -19,8 +19,8 @@ fn index() -> Redirect {
 
 // endpoint
 // /tauri-releases/google-keep-desktop&win64&1.18.0?msg=""
-#[get("/google-keep-desktop/<_platform>/<current_version>?<msg>")]
-fn google_keep_desktop_api(_platform: &str, current_version: &str, msg: Option<&str>) -> Result<Value, Status> {
+#[get("/google-keep-desktop/<_platform>/<_current_version>?<msg>")]
+fn google_keep_desktop_api(_platform: &str, _current_version: &str, msg: Option<&str>) -> Result<Value, Status> {
     // Status::NoContent
     if let Some(msg) = msg {
         println!("{msg}");
@@ -36,7 +36,7 @@ fn google_keep_desktop_api(_platform: &str, current_version: &str, msg: Option<&
 
 #[get("/chat_with_ai?<msg>")]
 fn open_ai_chat(msg: String) -> Result<Value, Status> {
-    let string = chatAI::chat(msg).unwrap_or(Some("carajo mierda".to_string()));
+    let string = chat_ai::chat(msg).unwrap_or(Some("carajo mierda".to_string()));
     
     Ok(json!({
         "notes": string
