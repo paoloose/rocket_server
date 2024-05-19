@@ -49,4 +49,8 @@ fn rocket() -> _ {
         .mount("/", routes![index])
         .mount(GPTHOLA, routes![google_keep_desktop_api])
         .mount(GPTHOLA, routes![open_ai_chat])
+        .configure(rocket::Config {
+            port: 8000,
+            ..Default::default()
+        })
 }
