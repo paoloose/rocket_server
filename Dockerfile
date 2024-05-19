@@ -8,10 +8,10 @@ WORKDIR /usr/src/app
 COPY Cargo.toml Cargo.lock ./
 
 # Pre-build the dependencies to cache them
-RUN echo "fn main() {}" > dummy.rs
-RUN mkdir src && mv dummy.rs src/
+RUN echo "fn main() {}" > main.rs
+RUN mkdir src && mv main.rs src/
 RUN cargo build --release
-RUN rm -rf src/dummy.rs
+RUN rm -rf src/main.rs
 
 # Copy the source code
 COPY . .
