@@ -1,3 +1,5 @@
 /target
 cargo.log
 .env
+.shuttle-storage
+Secrets*.toml

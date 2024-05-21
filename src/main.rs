@@ -49,16 +49,26 @@ fn open_ai_chat(msg: String) -> Result<Value, Status> {
     }))
 }
 
-#[launch]
-fn rocket() -> _ {
-    rocket::build()
+// #[launch]
+// fn rocket() -> _ {
+//     rocket::build()
+//         .mount("/", routes![index])
+//         .mount(GPTHOLA, routes![google_keep_desktop_api])
+//         .mount(GPTHOLA, routes![open_ai_chat])
+//         .configure(rocket::Config {
+//             port: 8000,
+//             ..Default::default()
+//         })
+// }
+
+#[shuttle_runtime::main]
+async fn main() -> shuttle_rocket::ShuttleRocket {
+    let rocket = rocket::build()
         .mount("/", routes![index])
         .mount(GPTHOLA, routes![google_keep_desktop_api])
-        .mount(GPTHOLA, routes![open_ai_chat])
-        .configure(rocket::Config {
-            port: 8000,
-            ..Default::default()
-        })
+        .mount(GPTHOLA, routes![open_ai_chat]);
+
+    Ok(rocket.into())
 }
 
 fn chat(message: String) -> Result<Option<String>, Box<dyn std::error::Error>> {
