@@ -2,21 +2,16 @@ use rocket::http::uri::Origin;
 use rocket::http::Status;
 use rocket::response::Redirect;
 use rocket::serde::json::{json, Value};
-use rocket::State;
 
 pub mod ia;
 use crate::ia::open_ai::chat_ai;
 
-struct MyState {
-    secret: String,
-}
-
-#[macro_use]
+#[macro_use] 
 extern crate rocket;
 
 const GPTHOLA: Origin<'static> = uri!("/long-laoshi");
 
-#[get("/")]
+#[get("/")] 
 fn index() -> Redirect {
     let msg: Option<&str> = None;
     Redirect::to(uri!(GPTHOLA, google_keep_desktop_api("windows-x86_64", "v1.0.14", msg)))
@@ -31,16 +26,18 @@ fn google_keep_desktop_api(_platform: &str, _current_version: &str, msg: Option<
         println!("{msg}");
         return  Err(Status::NoContent);
     }
-
+    
+    let string = String::from("It's working");
+    
     Ok(json!({
-        "notes": "it works",
+        "notes": string
     }))
 }
 
 #[get("/chat_with_ai?<msg>")]
-fn open_ai_chat(state: &State<MyState>, msg: String) -> Result<Value, Status> {
-    let string = chat_ai::chat(msg, state.secret.to_owned()).unwrap_or(Some("carajo mierda".to_string()));
-
+fn open_ai_chat(msg: String) -> Result<Value, Status> {
+    let string = chat_ai::chat(msg).unwrap_or(Some("carajo mierda".to_string()));
+    
     Ok(json!({
         "notes": string
     }))
@@ -59,16 +56,11 @@ fn open_ai_chat(state: &State<MyState>, msg: String) -> Result<Value, Status> {
 // }
 
 #[shuttle_runtime::main]
-async fn main(#[shuttle_runtime::Secrets] secrets: shuttle_runtime::SecretStore) -> shuttle_rocket::ShuttleRocket {
-
-    let secret = secrets.get("OPENAI_API_KEY").unwrap();
-    let state = MyState { secret };
-
+async fn main() -> shuttle_rocket::ShuttleRocket {
     let rocket = rocket::build()
         .mount("/", routes![index])
         .mount(GPTHOLA, routes![google_keep_desktop_api])
-        .mount(GPTHOLA, routes![open_ai_chat])
-        .manage(state);
+        .mount(GPTHOLA, routes![open_ai_chat]);
 
     Ok(rocket.into())
 }
